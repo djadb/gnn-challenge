@@ -29,7 +29,7 @@ jobs:
 
       - name: Run scoring
         run: |
-          python scoring_script.py submissions/random_submission.parquet private_labels/test_labels.csv score.txt
+          python scoring_script.py submissions/random_submission.parquet private_labels/test_labels.parquet score.txt
 
       - name: Update leaderboard
         run: |
