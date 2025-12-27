@@ -40,11 +40,12 @@ jobs:
           fetch-depth: 0
       
       - name: Commit leaderboard update
+        env:
+          PAT_TOKEN: ${{ secrets.BOT_TOKEN }}
         run: |
           git config user.name "challenge-bot"
           git config user.email "challenge-bot@users.noreply.github.com"
           git checkout main
-          git pull origin main
           git add leaderboard.md
-          git commit -m "Update leaderboard" || echo "No changes to commit"
-          git push origin main
+          git commit -m "Update leaderboard"
+          git push https://$BOT_TOKEN@github.com/abdksm/gnn-challenge.git main
