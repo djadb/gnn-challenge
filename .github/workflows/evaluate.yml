@@ -1,0 +1,44 @@
+name: Evaluate Submission
+
+on:
+  pull_request:
+    paths:
+      - 'submissions/**'
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install pandas pyarrow scikit-learn torch torch-geometric
+
+      - name: Clone private labels repo
+        env:
+          EVAL_TOKEN: ${{ secrets.EVAL_TOKEN }}
+        run: |
+          git clone https://${EVAL_TOKEN}@github.com/abdksm/gnn-challenge-private.git private_labels
+
+      - name: Run scoring
+        run: |
+          python scoring_script.py submissions/submission.parquet private_labels/test_labels.csv score.txt
+
+      - name: Update leaderboard
+        run: |
+          python update_leaderboard.py score.txt leaderboard.md "${{ github.event.pull_request.user.login }}"
+
+      - name: Commit leaderboard update
+        run: |
+          git config user.name "challenge-bot"
+          git config user.email "challenge-bot@users.noreply.github.com"
+          git add leaderboard.md
+          git commit -m "Update leaderboard"
+          git push
