@@ -106,4 +106,4 @@ with torch.no_grad():
         pred = out.argmax(dim=1)
         test_preds.extend(pred.cpu().numpy())
         
-pd.DataFrame({'graph_id': test ['graph_id'], 'y_pred': test_preds}).to_parquet('../submissions/sample_submission.parquet', index=False)
+pd.DataFrame({'graph_id': test['graph_id'], 'y_pred': test_preds}).to_parquet('../submissions/sample_submission.parquet', index=False)
